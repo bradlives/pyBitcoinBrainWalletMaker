@@ -1,9 +1,6 @@
 import os
-import keyboard
+import msvcrt
 import qrcode_terminal
-
-#dlls_folder = os.path.join(os.path.dirname(sys.executable), "dlls")
-#os.environ["PATH"] = f"{dlls_folder};{os.environ['PATH']}"
 
 from bip_utils import (
     Bip39MnemonicGenerator,
@@ -15,12 +12,10 @@ from bip_utils import (
     Bip44Changes
 )
 
-
 def generate_seed_phrase():
     """Generate a 12-word seed phrase."""
     mnemonic = Bip39MnemonicGenerator().FromWordsNumber(12)
     return mnemonic
-
 
 def verify_seed_phrase(seed_phrase, lang=Bip39Languages.ENGLISH):
     """Verify the given seed phrase."""
@@ -31,7 +26,6 @@ def verify_seed_phrase(seed_phrase, lang=Bip39Languages.ENGLISH):
     except Exception as e:
         print("Error:", e)
         return False
-
 
 def derive_keys(seed_phrase):
     """Derive private and public keys from the given seed phrase."""
@@ -44,7 +38,6 @@ def derive_keys(seed_phrase):
     address = bip44_address.PublicKey().ToAddress()
 
     return private_key, address
-
 
 def print_keys(seed_phrase):
     """Print the private and public keys derived from the given seed phrase."""
@@ -60,10 +53,9 @@ def print_keys(seed_phrase):
     print("Press x to hide qrcode\nPress q to quit.\r")   
     return private_key, public_key
 
-
 def handle_key_event(key, seed_phrase):
     """Handle key events and perform the corresponding actions."""
-    if key.name == "space" and key.event_type == keyboard.KEY_DOWN:
+    if key == b' ':
         seed_phrase = generate_seed_phrase()
         if verify_seed_phrase(seed_phrase):
             private_key, public_key = print_keys(seed_phrase)
@@ -72,24 +64,22 @@ def handle_key_event(key, seed_phrase):
             print("The seed phrase is not valid.")
             return seed_phrase
 
-    elif key.name == "c" and key.event_type == keyboard.KEY_DOWN:
+    elif key == b'c':
         private_key, public_key = print_keys(seed_phrase)
         qrcode_terminal.draw(public_key)
 
-    elif key.name == "h" and key.event_type == keyboard.KEY_DOWN:
-          
+    elif key == b'h':
         private_key, public_key = print_keys(seed_phrase)
         qrcode_terminal.draw(private_key)
 
-    elif key.name == "x" and key.event_type == keyboard.KEY_DOWN:
+    elif key == b'x':
         private_key, public_key = print_keys(seed_phrase)
 
-    elif key.name == "q" and key.event_type == keyboard.KEY_DOWN:
+    elif key == b'q':
         print("\nGoodbye!")
         return None
 
     return seed_phrase
-
 
 def main():
     os.system("cls")  # Clear the terminal
@@ -97,9 +87,9 @@ def main():
     seed_phrase = generate_seed_phrase()
 
     while seed_phrase:
-        key = keyboard.read_event()
-        seed_phrase = handle_key_event(key, seed_phrase)
-
+        if msvcrt.kbhit():
+            key = msvcrt.getch()
+            seed_phrase = handle_key_event(key, seed_phrase)
 
 if __name__ == "__main__":
-    main()
+    main()    
