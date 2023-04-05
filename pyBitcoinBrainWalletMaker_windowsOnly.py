@@ -40,16 +40,16 @@ def derive_keys(seed_phrase):
     return private_key, address
 
 def print_keys(seed_phrase):
-    """Print the private and public keys derived from the given seed phrase."""
+    """Print the private and public address derived from the given seed phrase."""
     private_key, public_key = derive_keys(seed_phrase)
     os.system("cls")  # Clear the terminal
     print("Random 12-word seed phrase - memorise or store these safely, full access hot wallet is created with this phrase\n\n") 
     print(seed_phrase)
     print("\n\nPrivate key:", private_key)
-    print("Public key:", public_key)
+    print("Public Address:", public_key)
     print("\nPress the spacebar to randomly generate a new seed phrase\r")
     print("Press h for hot wallet qrcode - (Private Key) create a full access daily wallet, or use for cold wallet access\r")
-    print("Press c for cold wallet qrcode - (Public Key) use to create a safe watch only wallet online, it can recieve funds only. REQUIRES the seed-phrase or private key(hot wallet) to access wallet and send transactions\r")
+    print("Press c for cold wallet qrcode - (Public Address) use to create a safe watch only wallet online, it can recieve funds only. REQUIRES the seed-phrase or private key(hot wallet) to access wallet and send transactions\r")
     print("Press x to hide qrcode\nPress q to quit.\r")   
     return private_key, public_key
 
